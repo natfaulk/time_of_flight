@@ -1,9 +1,7 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-# in samples per second
-SAMPLE_RATE = 1e6
+from utils.constants import SAMPLE_RATE
 
 # time in seconds
 # freq in hz
@@ -37,39 +35,3 @@ def quantise(_samples, _bits):
     out.append(val)
   
   return np.array(out)
-
-def saveToFile(_samples, _bits):
-  filename = f'rawbytes_{_bits}bit.bin'
-  
-  # could pack much more efficiently...
-  outformat = np.uint8
-  if _bits > 8:
-    outformat = np.uint16
-  elif _bits > 16:
-    outformat = np.uint32
-
-  with open(filename, 'wb') as binary_file:
-    binary_file.write(_samples.astype(outformat))
-
-if __name__ == '__main__':
-  LENGTH = 0.01
-  BITS = 8
-
-  signal1 = generateSignal(LENGTH, 30e3, 0.5, math.pi / 4)
-  signal2 = generateSignal(LENGTH, 26e3, 0.2)
-  noise = generateNoise(LENGTH, 0.1)
-
-  samples = signal1 + signal2 + noise
-  samples8bit = quantise(samples, BITS)
-
-  saveToFile(samples8bit, BITS)
-
-  xpoints = [i / SAMPLE_RATE for i in range(len(samples))]
-
-  plt.plot(xpoints, samples8bit)
-  plt.show()
-
-  print(samples8bit[:100])
-
-
-
